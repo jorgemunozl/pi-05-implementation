@@ -40,16 +40,20 @@ const Notes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
       <Navigation />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <BookOpen className="w-8 h-8 text-blue-600" />
-            <h1 className="text-4xl font-bold text-gray-900">Physics Notes</h1>
+            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+            <span className="text-orange-500 font-medium uppercase tracking-wide text-sm">Knowledge</span>
           </div>
-          <p className="text-xl text-gray-600">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <BookOpen className="w-8 h-8 text-orange-500" />
+            <h1 className="text-4xl font-bold text-white">Physics Notes</h1>
+          </div>
+          <p className="text-xl text-gray-400">
             Capture your physics insights, formulas, and discoveries
           </p>
         </div>
@@ -57,33 +61,34 @@ const Notes = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Add Note Form */}
           <div>
-            <Card>
+            <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
-                <CardTitle>Add New Note</CardTitle>
+                <CardTitle className="text-white">Add New Note</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="title">Title</Label>
+                  <Label htmlFor="title" className="text-gray-300">Title</Label>
                   <Input 
                     id="title"
                     placeholder="Enter note title..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-orange-500"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="content">Content</Label>
+                  <Label htmlFor="content" className="text-gray-300">Content</Label>
                   <Textarea 
                     id="content"
                     placeholder="Write your physics note here... You can include formulas, observations, questions, etc."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="min-h-[200px]"
+                    className="min-h-[200px] bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-orange-500"
                   />
                 </div>
                 <Button 
                   onClick={addNote} 
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0"
                   disabled={!title.trim() || !content.trim()}
                 >
                   Add Note
@@ -95,30 +100,30 @@ const Notes = () => {
           {/* Notes List */}
           <div>
             <div className="mb-4">
-              <h2 className="text-2xl font-semibold text-gray-900">
+              <h2 className="text-2xl font-semibold text-white">
                 Your Notes ({notes.length})
               </h2>
             </div>
             
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
               {notes.length === 0 ? (
-                <Card>
+                <Card className="bg-gray-900 border-gray-800">
                   <CardContent className="text-center py-12">
-                    <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                     <p className="text-gray-500">No notes yet. Start writing your first physics note!</p>
                   </CardContent>
                 </Card>
               ) : (
                 notes.map((note) => (
-                  <Card key={note.id} className="hover:shadow-md transition-shadow">
+                  <Card key={note.id} className="bg-gray-900 border-gray-800 hover:border-orange-500/50 transition-all">
                     <CardHeader className="pb-2">
                       <div className="flex justify-between items-start">
-                        <CardTitle className="text-lg">{note.title}</CardTitle>
+                        <CardTitle className="text-lg text-white">{note.title}</CardTitle>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => deleteNote(note.id)}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -129,7 +134,7 @@ const Notes = () => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-700 whitespace-pre-wrap">{note.content}</p>
+                      <p className="text-gray-300 whitespace-pre-wrap">{note.content}</p>
                     </CardContent>
                   </Card>
                 ))
