@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Microscope, TestTube, Atom, FlaskConical } from 'lucide-react';
+import { Microscope, TestTube, Atom, FlaskConical, Calculator, Computer } from 'lucide-react';
 
 const Navigation = () => {
   return (
@@ -18,6 +18,8 @@ const Navigation = () => {
             <a href="#discoveries" className="text-gray-300 hover:text-orange-500 transition-colors">Discoveries</a>
             <a href="#experiments" className="text-gray-300 hover:text-orange-500 transition-colors">Experiments</a>
             <a href="#latex" className="text-gray-300 hover:text-orange-500 transition-colors">Physics LaTeX</a>
+            <a href="#math" className="text-gray-300 hover:text-orange-500 transition-colors">Math</a>
+            <a href="#computer-science" className="text-gray-300 hover:text-orange-500 transition-colors">Computer Science</a>
             <a href="/notes" className="text-gray-300 hover:text-orange-500 transition-colors">Notes</a>
             <a href="#contact" className="text-gray-300 hover:text-orange-500 transition-colors">Contact</a>
           </div>
