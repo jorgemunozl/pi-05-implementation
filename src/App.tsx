@@ -9,6 +9,7 @@ import Notes from "./pages/Notes";
 import VisualizeNotes from "./pages/VisualizeNotes";
 import LatexEditor from "./pages/LatexEditor";
 import Contact from "./pages/Contact";
+import Timeline from "./pages/Timeline";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/visualize-notes" element={<VisualizeNotes />} />
           <Route path="/latex-editor" element={<LatexEditor />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/timeline" element={<Timeline />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
