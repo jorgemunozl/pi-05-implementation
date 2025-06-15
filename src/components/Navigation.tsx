@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Microscope, TestTube, Atom, FlaskConical, Calculator, Computer } from 'lucide-react';
+import { Microscope } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Navigation = () => {
@@ -9,6 +9,18 @@ const Navigation = () => {
 
   const handleLogoClick = () => {
     navigate('/');
+  };
+
+  const handleDiscoveriesClick = () => {
+    navigate('/timeline');
+  };
+
+  const handleNotesClick = () => {
+    navigate('/notes');
+  };
+
+  const handleContactClick = () => {
+    navigate('/contact');
   };
 
   return (
@@ -24,13 +36,25 @@ const Navigation = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#discoveries" className="text-gray-300 hover:text-orange-500 transition-colors">Discoveries</a>
-            <a href="#experiments" className="text-gray-300 hover:text-orange-500 transition-colors">Experiments</a>
-            <a href="#latex" className="text-gray-300 hover:text-orange-500 transition-colors">Physics LaTeX</a>
-            <a href="#math" className="text-gray-300 hover:text-orange-500 transition-colors">Math</a>
-            <a href="#computer-science" className="text-gray-300 hover:text-orange-500 transition-colors">Computer Science</a>
-            <a href="/notes" className="text-gray-300 hover:text-orange-500 transition-colors">Notes</a>
-            <a href="/contact" className="text-gray-300 hover:text-orange-500 transition-colors">Contact</a>
+            <button 
+              onClick={handleDiscoveriesClick}
+              className="text-gray-300 hover:text-orange-500 transition-colors"
+            >
+              Discoveries
+            </button>
+            <a href="#latex" className="text-gray-300 hover:text-orange-500 transition-colors">LaTeX</a>
+            <button 
+              onClick={handleNotesClick}
+              className="text-gray-300 hover:text-orange-500 transition-colors"
+            >
+              Notes
+            </button>
+            <button 
+              onClick={handleContactClick}
+              className="text-gray-300 hover:text-orange-500 transition-colors"
+            >
+              Contact
+            </button>
           </div>
           
           <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0">
