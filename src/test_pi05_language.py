@@ -10,7 +10,7 @@ paligemma = policy.model.paligemma_with_expert.paligemma.to(device).eval()
 # Use the same tokenizer as PI05
 tokenizer = AutoTokenizer.from_pretrained("google/paligemma-3b-pt-224")
 
-prompt = "Hello there!"
+prompt = "Hello there"
 inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
 with torch.no_grad():

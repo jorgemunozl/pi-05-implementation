@@ -19,10 +19,10 @@ from typing import Any, Dict
 
 import torch
 
-from lerobot.configs.policies import PreTrainedConfig
 from lerobot.datasets.lerobot_dataset import LeRobotDataset, LeRobotDatasetMetadata
-from lerobot.policies.factory import make_policy, make_pre_post_processors
-
+from lerobot.policies.pi0.modeling_pi0 import PI0Policy
+from lerobot.policies.pi0.processor_pi0 import make_pi0_pre_post_processors
+from adapt_dataset_for_pi0 import remap_observation_keys_for_pi0
 
 REPO_ID = "NONHUMAN-RESEARCH/sarm_dataset_aloha_mobile_wash_pan"
 PI0_MODEL_ID = "lerobot/pi0_base"
@@ -62,25 +62,25 @@ def main() -> None:
     print(f"Loading dataset metadata for: {REPO_ID}")
     ds_meta = LeRobotDatasetMetadata(REPO_ID)
     print(f"- Available feature keys: {list(ds_meta.features.keys())[:10]} ...")
+
+    # Recall that Pi Zero waits observation.images.base_0_rgb
+    # observation.images.left_wrist_0_rgb
+    # observation.images.right_wrist_0_rgb
+
     print(f"- Number of episodes: {len(ds_meta.episodes)}")
 
     # 2) Build π₀ config and policy (pretrained weights from the Hub)
     print(f"Loading π₀ policy from: {PI0_MODEL_ID}")
-    cfg = PreTrainedConfig.from_dict(
-        {
-            "type": "pi0",
-            "pretrained_path": PI0_MODEL_ID,
-            "device": str(device),
-        }
-    )
-
-    policy = make_policy(cfg, ds_meta=ds_meta)
+    
+    policy = PI0Policy.from_pretrained(PI0_MODEL_ID)
+    policy.config.device = str(device)
+    policy.to(device)
     policy.eval()
 
     # 3) Build pre- and post-processors for this dataset
     #    (new processors based on dataset stats and pi0 config)
-    preproc, postproc = make_pre_post_processors(
-        policy.config,
+    preproc, postproc = make_pi0_pre_post_processors(
+        config=policy.config,
         dataset_stats=None,
     )
 
@@ -90,12 +90,15 @@ def main() -> None:
     print(f"- Frames in first episode: {len(dataset)}")
 
     # 5) Offline inference loop
-    task = "wash the pan in the sink"
+    task = "Wash the pan in the sink"
     n_steps = min(10, len(dataset))  # keep it short for a quick demo
 
     print(f"\nRunning π₀ inference on {n_steps} frames with task: {task!r}\n")
     for i in range(n_steps):
         frame = dataset[i]
+
+        # Adapt dataset keys to match π₀ expectations (in-memory only).
+        frame = remap_observation_keys_for_pi0(frame)
 
         batch = build_batch_from_frame(frame, task=task, index=i)
 
@@ -105,16 +108,23 @@ def main() -> None:
         with torch.no_grad():
             action = policy.select_action(policy_input)
             action = postproc(action)
+            
+            policy_action = policy.select_action(policy_input)
+            policy_action = postproc(policy_action)
 
         # `action` is a PolicyAction dict (e.g. {"action": tensor(...)}).
         # For a quick look, print shape and a small slice.
-        action_tensor = action.get("action")
-        if isinstance(action_tensor, torch.Tensor):
-            # Move to CPU for printing
-            action_np = action_tensor.detach().cpu().numpy()
-            print(f"Step {i:02d}: action shape {action_np.shape}, first values {action_np.reshape(-1)[:5]}")
+    
+        if isinstance(policy_action, torch.Tensor):
+            action_np = policy_action.detach().cpu().numpy()
+            print(
+                f"Step {i:02d}: action shape {action_np.shape}, "
+                f"first values {action_np.reshape(-1)[:5]}"
+            )
         else:
-            print(f"Step {i:02d}: action (non-tensor) = {action}")
+            print(f"Step {i:02d}: action (non-tensor) = {policy_action}")
+
+
 
 
 if __name__ == "__main__":
